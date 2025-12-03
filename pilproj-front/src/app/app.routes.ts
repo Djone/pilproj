@@ -5,11 +5,13 @@ import { ProjectsComponent } from './pages/projects/projects.component';
 import { ChargesComponent } from './pages/charges/charges.component';
 import { ImputationsComponent } from './pages/imputations/imputations.component';
 import { CollaborateursComponent } from './pages/collaborateurs/collaborateurs.component';
+import { ProjectDetailComponent } from './pages/project-detail/project-detail.component';
 
 export const routes: Routes = [
   { path: '', component: DashboardComponent, pathMatch: 'full' },
   { path: 'clients', component: ClientsComponent },
   { path: 'projets', component: ProjectsComponent },
+  { path: 'projets/:id', component: ProjectDetailComponent },
   { path: 'charges', component: ChargesComponent },
   { path: 'imputations', component: ImputationsComponent },
   { path: 'collaborateurs', component: CollaborateursComponent },

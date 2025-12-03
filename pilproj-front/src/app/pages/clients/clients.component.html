@@ -1,8 +1,54 @@
-<p-card header="Clients">
-  <p>
-    Prévoir un CRUD complet : raison sociale, logo, adresse, contacts. Ici, ajoute une p-table avec édition inline
-    et un p-dialog pour la création.
-  </p>
-  <p-divider></p-divider>
-  <p-button label="Nouveau client" icon="pi pi-plus" severity="success" />
-</p-card>
+<div class="page">
+  <div class="header">
+    <h2>Clients</h2>
+    <p-button label="Nouveau client" icon="pi pi-plus" severity="success" (onClick)="openClientDialog()"></p-button>
+  </div>
+
+  <p-card>
+    <p-table [value]="clients" responsiveLayout="scroll">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Logo</th>
+          <th>Raison sociale</th>
+          <th>Adresse</th>
+          <th style="width:140px"></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-row>
+        <tr>
+          <td>
+            <img [src]="row.logoUrl" alt="logo" width="36" height="36" style="border-radius:6px" />
+          </td>
+          <td>{{ row.raisonSociale }}</td>
+          <td>{{ row.adresse }}</td>
+          <td class="actions">
+            <p-button icon="pi pi-pencil" text severity="info" (onClick)="openClientDialog(row)"></p-button>
+            <p-button icon="pi pi-trash" text severity="danger" (onClick)="deleteClient(row.id)"></p-button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>
+
+<p-dialog
+  header="{{ editingClientId ? 'Modifier le client' : 'Nouveau client' }}"
+  [(visible)]="showClientDialog"
+  [modal]="true"
+  [style]="{ width: '520px' }"
+>
+  <div class="form-grid">
+    <label>Raison sociale</label>
+    <input pInputText type="text" [(ngModel)]="clientForm.raisonSociale" placeholder="Raison sociale" />
+
+    <label>Logo (URL)</label>
+    <input pInputText type="text" [(ngModel)]="clientForm.logoUrl" placeholder="https://..." />
+
+    <label>Adresse</label>
+    <input pInputText type="text" [(ngModel)]="clientForm.adresse" placeholder="Adresse" />
+  </div>
+  <ng-template pTemplate="footer">
+    <p-button label="Annuler" icon="pi pi-times" text (onClick)="showClientDialog=false"></p-button>
+    <p-button label="Enregistrer" icon="pi pi-check" (onClick)="saveClient()" severity="success"></p-button>
+  </ng-template>
+</p-dialog>

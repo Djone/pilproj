@@ -1,8 +1,55 @@
-<p-card header="Projets">
-  <p>
-    Liste des projets par client avec dates, périmètres, charges initiales et planning. Ajouter une vue détail
-    avec timeline PrimeNG pour suivre les phases.
-  </p>
-  <p-divider></p-divider>
-  <p-button label="Nouveau projet" icon="pi pi-briefcase" severity="success" />
-</p-card>
+<div class="page">
+  <div class="header">
+    <h2>Projets</h2>
+    <p-button label="Nouveau projet" icon="pi pi-briefcase" severity="success" (onClick)="openProjectDialog()"></p-button>
+  </div>
+
+  <p-card>
+    <p-table [value]="projects" responsiveLayout="scroll">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Intitulé</th>
+          <th>Client</th>
+          <th style="width:200px"></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-row>
+        <tr>
+          <td>{{ row.intitule }}</td>
+          <td><p-tag [value]="clientLabel(row.clientId)" severity="info"></p-tag></td>
+          <td class="actions">
+            <p-button icon="pi pi-pencil" text severity="info" (onClick)="openProjectDialog(row)"></p-button>
+            <p-button icon="pi pi-trash" text severity="danger" (onClick)="deleteProject(row.id)"></p-button>
+            <p-button icon="pi pi-arrow-right" label="Détails" [routerLink]="['/projets', row.id]" size="small"></p-button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>
+
+<p-dialog
+  header="{{ editingProjectId ? 'Modifier le projet' : 'Nouveau projet' }}"
+  [(visible)]="showProjectDialog"
+  [modal]="true"
+  [style]="{ width: '520px' }"
+>
+  <div class="form-grid">
+    <label>Intitulé</label>
+    <input pInputText type="text" [(ngModel)]="projectForm.intitule" placeholder="Intitulé du projet" />
+
+    <label>Client</label>
+    <p-select
+      [options]="clients"
+      optionLabel="label"
+      optionValue="id"
+      [(ngModel)]="projectForm.clientId"
+      placeholder="Choisir un client"
+      styleClass="w-full"
+    ></p-select>
+  </div>
+  <ng-template pTemplate="footer">
+    <p-button label="Annuler" icon="pi pi-times" text (onClick)="showProjectDialog=false"></p-button>
+    <p-button label="Enregistrer" icon="pi pi-check" (onClick)="saveProject()" severity="success"></p-button>
+  </ng-template>
+</p-dialog>

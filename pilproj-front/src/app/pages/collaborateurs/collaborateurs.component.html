@@ -1,8 +1,121 @@
-<p-card header="Collaborateurs & Profils">
-  <p>
-    CRUD des profils (intitulé, coût, TJM) et des collaborateurs (nom, prénom, profil). Ajouter une vue des coûts
-    journaliers et un contrôle de double assignation.
-  </p>
-  <p-divider></p-divider>
-  <p-button label="Ajouter un collaborateur" icon="pi pi-user-plus" severity="success" />
-</p-card>
+<div class="page">
+  <div class="header">
+    <h2>Collaborateurs & Profils</h2>
+    <div class="header__actions">
+      <p-button label="Ajouter un profil" icon="pi pi-id-card" severity="info" (onClick)="openProfilDialog()"></p-button>
+      <p-button
+        label="Ajouter un collaborateur"
+        icon="pi pi-user-plus"
+        severity="success"
+        (onClick)="openCollabDialog()"
+      ></p-button>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="col-12 md:col-5">
+      <p-card header="Profils">
+        <p-table [value]="profils" responsiveLayout="scroll">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Intitulé</th>
+              <th style="width:140px">TJM (€)</th>
+              <th style="width:120px"></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-row>
+            <tr>
+              <td>{{ row.intitule }}</td>
+              <td>{{ row.tjm | number:'1.0-0' }}</td>
+              <td class="actions">
+                <p-button icon="pi pi-pencil" text severity="info" (onClick)="openProfilDialog(row)"></p-button>
+                <p-button icon="pi pi-trash" text severity="danger" (onClick)="deleteProfil(row.id)"></p-button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-card>
+    </div>
+
+    <div class="col-12 md:col-7">
+      <p-card header="Collaborateurs">
+        <p-table [value]="collaborateurs" responsiveLayout="scroll">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Nom</th>
+              <th>Prénom</th>
+              <th>Profil</th>
+              <th>Coût (€)</th>
+              <th style="width:140px"></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-row>
+            <tr>
+              <td>{{ row.nom }}</td>
+              <td>{{ row.prenom }}</td>
+              <td>
+                <p-tag [value]="profilLabel(row.profilId)" severity="info"></p-tag>
+              </td>
+              <td>{{ row.cout | number:'1.0-0' }}</td>
+              <td class="actions">
+                <p-button icon="pi pi-pencil" text severity="info" (onClick)="openCollabDialog(row)"></p-button>
+                <p-button icon="pi pi-trash" text severity="danger" (onClick)="deleteCollab(row.id)"></p-button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-card>
+    </div>
+  </div>
+</div>
+
+<p-dialog
+  header="{{ editingProfilId ? 'Modifier le profil' : 'Nouveau profil' }}"
+  [(visible)]="showProfilDialog"
+  [modal]="true"
+  [style]="{ width: '450px' }"
+>
+  <div class="form-grid">
+    <label>Intitulé</label>
+    <input pInputText type="text" [(ngModel)]="profilForm.intitule" placeholder="Ex: DevOps" />
+
+    <label>TJM (€)</label>
+    <p-inputNumber [(ngModel)]="profilForm.tjm" mode="decimal" inputStyleClass="w-full" [min]="0"></p-inputNumber>
+  </div>
+  <ng-template pTemplate="footer">
+    <p-button label="Annuler" icon="pi pi-times" text (onClick)="showProfilDialog=false"></p-button>
+    <p-button label="Enregistrer" icon="pi pi-check" (onClick)="saveProfil()" severity="success"></p-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog
+  header="{{ editingCollabId ? 'Modifier le collaborateur' : 'Nouveau collaborateur' }}"
+  [(visible)]="showCollabDialog"
+  [modal]="true"
+  [style]="{ width: '500px' }"
+>
+  <div class="form-grid">
+    <label>Nom</label>
+    <input pInputText type="text" [(ngModel)]="collabForm.nom" placeholder="Nom" />
+
+    <label>Prénom</label>
+    <input pInputText type="text" [(ngModel)]="collabForm.prenom" placeholder="Prénom" />
+
+    <label>Profil</label>
+    <p-select
+      [options]="profilOptions"
+      optionLabel="label"
+      optionValue="value"
+      [(ngModel)]="collabForm.profilId"
+      placeholder="Choisir un profil"
+      styleClass="w-full"
+    ></p-select>
+
+    <label>Coût (€)</label>
+    <p-inputNumber [(ngModel)]="collabForm.cout" mode="decimal" inputStyleClass="w-full" [min]="0"></p-inputNumber>
+  </div>
+  <ng-template pTemplate="footer">
+    <p-button label="Annuler" icon="pi pi-times" text (onClick)="showCollabDialog=false"></p-button>
+    <p-button label="Enregistrer" icon="pi pi-check" (onClick)="saveCollab()" severity="success"></p-button>
+  </ng-template>
+</p-dialog>
