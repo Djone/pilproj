@@ -1,0 +1,103 @@
+<div class="page">
+  <div class="page__header">
+    <div>
+      <h2>Pilotage projet</h2>
+      <p>Suivi avancement, budget et staffing</p>
+    </div>
+    <p-tag value="MàJ {{ today | date:'dd/MM/yyyy' }}" severity="info"></p-tag>
+  </div>
+
+  <div class="grid cards">
+    @for (kpi of kpis; track kpi.label) {
+      <div class="col-12 md:col-3">
+        <p-card [header]="kpi.label" class="kpi-card">
+          <div class="kpi-card__value">{{ kpi.value }}</div>
+          @if (kpi.delta) {
+            <p-tag [value]="kpi.delta" [severity]="kpi.severity ?? 'info'"></p-tag>
+          }
+        </p-card>
+      </div>
+    }
+  </div>
+
+  <div class="grid">
+    <div class="col-12 md:col-7">
+      <p-card header="Réalisé vs initial (€)">
+        <p-chart type="bar" [data]="costChartData" [options]="costChartOptions" />
+      </p-card>
+    </div>
+    <div class="col-12 md:col-5">
+      <p-card header="Charge hebdo">
+        <p-chart type="line" [data]="weeklyLoadData" />
+      </p-card>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="col-12 md:col-7">
+      <p-card header="Avancement par périmètre">
+        <p-table [value]="perimeters" responsiveLayout="scroll">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Périmètre</th>
+              <th>% réalisé</th>
+              <th>RAF (j.h)</th>
+              <th>Budget</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-row>
+            <tr>
+              <td>{{ row.name }}</td>
+              <td>
+                <p-progressBar [value]="row.realized" [showValue]="true"></p-progressBar>
+              </td>
+              <td>{{ row.raf | number:'1.0-1' }}</td>
+              <td>{{ row.budget | number:'1.0-0' }} €</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-card>
+    </div>
+
+    <div class="col-12 md:col-5">
+      <p-card header="Staffing (ETP)">
+        <p-table [value]="staffing" responsiveLayout="scroll">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Acteur</th>
+              <th>Rôle</th>
+              <th>Catégorie</th>
+              <th>ETP plan</th>
+              <th>ETP réel</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-row>
+            <tr>
+              <td>
+                <p-avatar [label]="row.actor.substring(0, 1)" shape="circle" styleClass="mr-2" />
+                {{ row.actor }}
+              </td>
+              <td>{{ row.role }}</td>
+              <td><p-tag [value]="row.category" severity="info" /></td>
+              <td>{{ row.etpPlan | number:'1.2-2' }}</td>
+              <td>
+                <p-tag
+                  [value]="row.etpReal.toFixed(2)"
+                  [severity]="rowSeverity(row.etpReal * 100) === 'danger' ? 'danger' : 'success'"
+                />
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-card>
+    </div>
+  </div>
+
+  <p-divider></p-divider>
+
+  <div class="actions">
+    <p-button label="Créer un client" icon="pi pi-building" routerLink="/clients" />
+    <p-button label="Nouveau projet" icon="pi pi-briefcase" routerLink="/projets" severity="success" />
+    <p-button label="Saisir des imputations" icon="pi pi-calendar" routerLink="/imputations" severity="info" />
+  </div>
+</div>

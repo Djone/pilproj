@@ -1,0 +1,35 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.page__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  h2 {
+    margin: 0;
+  }
+
+  p {
+    margin: 0.125rem 0 0;
+    color: var(--surface-500);
+  }
+}
+
+.kpi-card {
+  .kpi-card__value {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}

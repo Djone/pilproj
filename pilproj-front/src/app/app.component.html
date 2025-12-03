@@ -1,0 +1,23 @@
+<div class="layout">
+  <p-menubar [model]="menuItems" class="layout__menu">
+    <ng-template pTemplate="start">
+      <div class="brand" routerLink="/">
+        <p-avatar label="PP" shape="circle" class="mr-2"></p-avatar>
+        <div class="brand__text">
+          <span class="brand__title">{{ title }}</span>
+          <small>Pilotage & budget</small>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="end">
+      <div class="menu__actions">
+        <p-tag value="PrimeNG" severity="success" class="mr-2"></p-tag>
+        <button pButton type="button" icon="pi pi-github" class="p-button-text p-button-rounded"></button>
+      </div>
+    </ng-template>
+  </p-menubar>
+
+  <main class="layout__content">
+    <router-outlet />
+  </main>
+</div>
